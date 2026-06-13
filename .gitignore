@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Agent skills (local only)
+.agents/
+
+# Build output
+dist/
+
+# Environment variables
+.env
+.env.*
+
+# Local docs / guides
+CINEMATIC_SCROLL_GUIDE.md
+
+# Editor & OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Vite
+.vite/
