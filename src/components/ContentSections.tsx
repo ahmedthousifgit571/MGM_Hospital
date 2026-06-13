@@ -14,12 +14,12 @@ import { Appointment } from './sections/Appointment'
  */
 export function ContentSections() {
   return (
-    <main className="relative z-10 bg-black">
+    <main className="relative z-10 bg-white">
       <Stats />
+      <Doctors />
       <About />
       <Specialities />
       <Facilities />
-      <Doctors />
       <Stories />
       <Appointment />
     </main>

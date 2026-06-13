@@ -1,71 +1,303 @@
-import { useRef } from 'react'
-import { useReveal } from '@/hooks/useReveal'
-import { useCountUp } from '@/hooks/useCountUp'
+import { useRef, useEffect } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-interface StatProps {
-  target: number
-  format: (n: number) => string
-  label: string
-}
+gsap.registerPlugin(ScrollTrigger)
 
-/** Single counting numeral + mono label. The numbers ARE the design — no cards. */
-function Stat({ target, format, label }: StatProps) {
-  const numRef = useRef<HTMLSpanElement>(null)
-  useCountUp(numRef, target, format)
-  return (
-    <div data-reveal className="flex flex-col">
-      <span
-        ref={numRef}
-        className="font-display font-semibold text-accent leading-[0.85] tabular-nums"
-        style={{ fontSize: 'clamp(3.5rem, 8vw, 7rem)', letterSpacing: '-0.04em' }}
-      >
-        {format(0)}
-      </span>
-      <span className="font-body text-[11px] uppercase tracking-[0.28em] text-muted mt-4">
-        {label}
-      </span>
-    </div>
-  )
+const SPECIALITIES = [
+  'Cardiac Sciences',
+  'Neurosurgery',
+  'Oncology',
+  'Orthopedics',
+  'Emergency Medicine',
+  'Gastro Sciences',
+  'Paediatrics & Neonatology',
+  'Pulmonology',
+  'Renal Sciences',
+  'Heart & Lung Transplant',
+  'Liver Diseases & Transplant',
+  "Women's Health & Obstetrics",
+  'Internal Medicine',
+  'Anaesthesiology & SICU',
+  'Multi-Visceral Organ Transplant',
+]
+
+const PILL_BASE: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  padding: '0.6rem 1.25rem',
+  borderRadius: '999px',
+  fontFamily: 'Inter, sans-serif',
+  fontSize: '0.875rem',
+  fontWeight: 500,
+  letterSpacing: '0.02em',
+  color: 'rgba(255,255,255,0.75)',
+  background: 'linear-gradient(135deg,rgba(255,255,255,0.08) 0%,rgba(255,255,255,0.03) 100%)',
+  border: '1px solid rgba(255,255,255,0.12)',
+  backdropFilter: 'blur(12px)',
+  WebkitBackdropFilter: 'blur(12px)',
+  cursor: 'pointer',
+  whiteSpace: 'nowrap',
+  outline: 'none',
+  userSelect: 'none',
 }
 
 export function Stats() {
-  const ref = useRef<HTMLElement>(null)
-  useReveal(ref)
+  const sectionRef = useRef<HTMLElement>(null)
+  const countRef = useRef<HTMLSpanElement>(null)
+
+  useEffect(() => {
+    if (!sectionRef.current) return
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    const ctx = gsap.context(() => {
+      const st = (start: string) => ({
+        trigger: sectionRef.current,
+        start,
+        once: true,
+      })
+
+      if (!prefersReduced) {
+        // Eyebrow row
+        gsap.from('[data-eyebrow]', {
+          opacity: 0, y: 16, filter: 'blur(4px)',
+          duration: 0.7, ease: 'power3.out',
+          scrollTrigger: st('top 80%'),
+        })
+
+        // Headline word stagger
+        gsap.from('[data-headline-word]', {
+          opacity: 0, y: 32, filter: 'blur(6px)',
+          duration: 0.9, stagger: 0.08, ease: 'power4.out',
+          delay: 0.1,
+          scrollTrigger: st('top 80%'),
+        })
+
+        // Gold hairline scaleX left → right
+        gsap.from('[data-divider]', {
+          scaleX: 0, transformOrigin: 'left center',
+          duration: 1.1, ease: 'power3.inOut', delay: 0.35,
+          scrollTrigger: st('top 80%'),
+        })
+
+        // Sub-copy
+        gsap.from('[data-subcopy]', {
+          opacity: 0, y: 20,
+          duration: 0.8, ease: 'power3.out', delay: 0.5,
+          scrollTrigger: st('top 80%'),
+        })
+
+        // Pills cascade
+        gsap.from('[data-spec-pill]', {
+          opacity: 0, y: 16, scale: 0.92, filter: 'blur(4px)',
+          duration: 0.5, stagger: 0.04, ease: 'power3.out', delay: 0.55,
+          scrollTrigger: st('top 75%'),
+        })
+      }
+
+      // Count-up on "15" (instant when reduced motion)
+      const counter = { val: 0 }
+      gsap.to(counter, {
+        val: 15,
+        duration: prefersReduced ? 0 : 1.8,
+        ease: 'power2.out',
+        onUpdate() {
+          if (countRef.current) {
+            countRef.current.textContent = String(Math.round(counter.val))
+          }
+        },
+        scrollTrigger: st('top 70%'),
+      })
+    }, sectionRef)
+
+    return () => ctx.revert()
+  }, [])
+
+  const onPillEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
+    gsap.to(e.currentTarget, {
+      background: 'linear-gradient(135deg,rgba(247,185,59,0.15) 0%,rgba(247,185,59,0.05) 100%)',
+      borderColor: 'rgba(247,185,59,0.45)',
+      color: '#FFFFFF',
+      duration: 0.25,
+      ease: 'power2.out',
+    })
+  }
+
+  const onPillLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
+    gsap.to(e.currentTarget, {
+      background: 'linear-gradient(135deg,rgba(255,255,255,0.08) 0%,rgba(255,255,255,0.03) 100%)',
+      borderColor: 'rgba(255,255,255,0.12)',
+      color: 'rgba(255,255,255,0.75)',
+      duration: 0.3,
+      ease: 'power2.out',
+    })
+  }
 
   return (
     <section
-      ref={ref}
-      className="relative min-h-screen flex flex-col justify-center"
-      style={{ padding: 'clamp(6rem, 12vh, 10rem) clamp(1.5rem, 8vw, 8rem)' }}
+      id="centres"
+      ref={sectionRef}
+      style={{
+        background: '#000',
+        padding: 'clamp(6rem, 12vh, 10rem) clamp(2rem, 8vw, 8rem)',
+        minHeight: '100vh',
+        position: 'relative',
+      }}
     >
-      <div className="w-full max-w-[1400px] mx-auto">
-        <div data-reveal className="flex items-center gap-4 mb-16">
-          <span className="font-body text-xs text-muted">01</span>
-          <span className="font-body text-[11px] uppercase tracking-[0.32em] text-muted">
-            MGM in numbers
-          </span>
-        </div>
+      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
 
-        {/* Single hairline; the row of giant numerals sits beneath it */}
-        <div className="h-px w-full bg-white/12" />
+        {/* ── ACT 1: Statement ─────────────────────────────── */}
+        <div
+          className="grid grid-cols-12 gap-x-8 items-end"
+          style={{ marginBottom: 'clamp(2rem, 4vh, 3rem)' }}
+        >
+          {/* Eyebrow row — full width */}
+          <div
+            data-eyebrow
+            className="col-span-12 flex items-center justify-between"
+            style={{ marginBottom: '2.5rem' }}
+          >
+            <div className="flex items-center gap-4">
+              <span
+                style={{
+                  fontFamily: '"JetBrains Mono","Courier New",monospace',
+                  fontSize: '11px',
+                  color: 'rgba(255,255,255,0.4)',
+                  letterSpacing: '0.25em',
+                }}
+              >
+                01
+              </span>
+              <span
+                style={{
+                  fontFamily: 'Inter,sans-serif',
+                  fontSize: '11px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.32em',
+                  color: 'rgba(255,255,255,0.4)',
+                }}
+              >
+                Centres of excellence
+              </span>
+            </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-14 pt-14">
-          <Stat target={500} format={(n) => `${Math.round(n)}+`} label="Specialists" />
-          {/* 24/7 is not a count — render statically in the same visual key */}
-          <div data-reveal className="flex flex-col">
-            <span
-              className="font-display font-semibold text-accent leading-[0.85] tabular-nums"
-              style={{ fontSize: 'clamp(3.5rem, 8vw, 7rem)', letterSpacing: '-0.04em' }}
-            >
-              24/7
-            </span>
-            <span className="font-body text-[11px] uppercase tracking-[0.28em] text-muted mt-4">
-              Emergency response
-            </span>
+            {/* Department count — top right */}
+            <div className="flex items-baseline gap-2">
+              <span
+                ref={countRef}
+                style={{
+                  fontFamily: '"Bebas Neue",sans-serif',
+                  fontSize: 'clamp(1.8rem, 3vw, 2.4rem)',
+                  color: '#f7b93b',
+                  letterSpacing: '-0.02em',
+                  lineHeight: 1,
+                }}
+              >
+                0
+              </span>
+              <span
+                style={{
+                  fontFamily: 'Inter,sans-serif',
+                  fontSize: '10px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.26em',
+                  color: 'rgba(255,255,255,0.35)',
+                }}
+              >
+                Departments
+              </span>
+            </div>
           </div>
-          <Stat target={50} format={(n) => `${Math.round(n)}K+`} label="Patients served" />
-          <Stat target={15} format={(n) => `${Math.round(n)}`} label="Clinical departments" />
+
+          {/* Headline — occupies cols 1–7 */}
+          <div className="col-span-12 lg:col-span-7">
+            <h2
+              style={{
+                fontFamily: '"Bebas Neue",sans-serif',
+                fontSize: 'clamp(3.5rem, 8vw, 7rem)',
+                lineHeight: 0.92,
+                letterSpacing: '-0.02em',
+                color: '#fff',
+                margin: 0,
+              }}
+            >
+              <span data-headline-word style={{ display: 'inline-block' }}>DEPTH</span>{' '}
+              <span data-headline-word style={{ display: 'inline-block' }}>ACROSS</span>{' '}
+              <span data-headline-word style={{ display: 'inline-block' }}>EVERY</span>
+              <br />
+              <span
+                data-headline-word
+                style={{ display: 'inline-block', color: '#f7b93b', fontStyle: 'italic' }}
+              >
+                SPECIALITY.
+              </span>
+            </h2>
+          </div>
+
+          {/* Sub-copy — cols 9–12, pinned to headline baseline (desktop) */}
+          <div
+            data-subcopy
+            className="hidden lg:flex lg:col-span-4 lg:col-start-9 items-end"
+            style={{ paddingBottom: '0.4rem' }}
+          >
+            <p
+              style={{
+                fontFamily: 'Inter,sans-serif',
+                fontSize: 'clamp(0.9rem, 1.5vw, 1.05rem)',
+                fontWeight: 300,
+                color: 'rgba(255,255,255,0.55)',
+                lineHeight: 1.65,
+                margin: 0,
+              }}
+            >
+              Senior specialists. Advanced technology.<br />
+              Every condition treated at the highest standard.
+            </p>
+          </div>
+
+          {/* Sub-copy — mobile (below headline) */}
+          <p
+            className="col-span-12 lg:hidden"
+            style={{
+              fontFamily: 'Inter,sans-serif',
+              fontSize: '0.95rem',
+              fontWeight: 300,
+              color: 'rgba(255,255,255,0.55)',
+              lineHeight: 1.65,
+              margin: '1.5rem 0 0',
+            }}
+          >
+            Senior specialists. Advanced technology.
+            Every condition treated at the highest standard.
+          </p>
         </div>
+
+        {/* Gold hairline — scaleX reveals left → right */}
+        <div
+          data-divider
+          style={{
+            width: '100%',
+            height: '1px',
+            background: '#f7b93b',
+            marginBottom: 'clamp(3rem, 6vh, 4rem)',
+          }}
+        />
+
+        {/* ── ACT 2: Glassmorphism pills ───────────────────── */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+          {SPECIALITIES.map((name) => (
+            <button
+              key={name}
+              data-spec-pill
+              style={PILL_BASE}
+              onMouseEnter={onPillEnter}
+              onMouseLeave={onPillLeave}
+            >
+              {name}
+            </button>
+          ))}
+        </div>
+
       </div>
     </section>
   )

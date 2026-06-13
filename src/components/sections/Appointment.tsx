@@ -22,7 +22,6 @@ interface FieldError {
   date?: string
 }
 
-/** Mono label locked in the floated position — for controls that always read as filled. */
 const fixedLabel: React.CSSProperties = {
   top: 0,
   fontSize: '0.62rem',
@@ -60,10 +59,11 @@ export function Appointment() {
     <section
       id="appointment"
       ref={ref}
+      data-theme="dark"
       className="relative min-h-screen flex items-center"
       style={{ padding: 'clamp(6rem, 12vh, 10rem) clamp(1.5rem, 8vw, 8rem)' }}
     >
-      <div className="w-full max-w-[1400px] mx-auto grid lg:grid-cols-2 gap-x-20 gap-y-14 items-center">
+      <div className="w-full max-w-350 mx-auto grid lg:grid-cols-2 gap-x-20 gap-y-14 items-center">
         {/* Left: copy */}
         <div>
           <div data-reveal className="flex items-center gap-4 mb-8">
@@ -89,7 +89,7 @@ export function Appointment() {
           </a>
         </div>
 
-        {/* Right: surgical form */}
+        {/* Right: form card */}
         <div data-reveal className="glass-card p-8 md:p-12">
           {submitted ? (
             <div className="text-center py-12">
@@ -134,7 +134,7 @@ export function Appointment() {
                   </select>
                   <label
                     htmlFor="ap-dept" className="surgical-label"
-                    style={{ ...fixedLabel, color: form.department ? '#f7b93b' : '#9a9488' }}
+                    style={{ ...fixedLabel, color: form.department ? '#f7b93b' : '#9CA3AF' }}
                   >
                     Department
                   </label>
@@ -149,7 +149,7 @@ export function Appointment() {
                   />
                   <label
                     htmlFor="ap-date" className="surgical-label"
-                    style={{ ...fixedLabel, color: form.date ? '#f7b93b' : '#9a9488' }}
+                    style={{ ...fixedLabel, color: form.date ? '#f7b93b' : '#9CA3AF' }}
                   >
                     Preferred date
                   </label>
@@ -166,7 +166,6 @@ export function Appointment() {
                 <label htmlFor="ap-notes" className="surgical-label">Notes (optional)</label>
               </div>
 
-              {/* The only gold-filled element in this section */}
               <button
                 type="submit"
                 className="group mt-3 w-full py-4 rounded-md font-body font-semibold text-sm tracking-wide flex items-center justify-center gap-3 bg-accent text-black transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98]"

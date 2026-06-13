@@ -22,8 +22,8 @@ export function Specialities() {
       className="relative min-h-screen flex flex-col justify-center"
       style={{ padding: 'clamp(6rem, 12vh, 10rem) clamp(1.5rem, 8vw, 8rem)' }}
     >
-      <div className="w-full max-w-[1400px] mx-auto">
-        <SectionHeader index="03" eyebrow="Our specialities" title="Depth in every department." className="mb-16" />
+      <div className="w-full max-w-350 mx-auto">
+        <SectionHeader index="04" eyebrow="Our specialities" title="Depth in every department." className="mb-16" />
 
         {/* 5 wide cells — 2 + 2 + 1 full-width (bento rhythm) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

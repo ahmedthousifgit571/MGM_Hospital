@@ -18,6 +18,7 @@ export function Navbar({ cinematicRef }: Props) {
   const navRef = useRef<HTMLElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
   const [condensed, setCondensed] = useState(false)
+  const [lightMode, setLightMode] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
@@ -36,13 +37,21 @@ export function Navbar({ cinematicRef }: Props) {
 
   useEffect(() => {
     if (!cinematicRef.current) return
-    const onScroll = () => setCondensed(window.scrollY > 80)
+    const el = cinematicRef.current
+    const onScroll = () => {
+      const y = window.scrollY
+      setCondensed(y > 80)
+      // Stay dark over cinematic + Centres (01, #000) only;
+      // Doctors (02) is light so the pill switches to white as soon as Doctors begins.
+      const centresEl = document.getElementById('centres')
+      const darkBottom = el.offsetHeight + (centresEl?.offsetHeight ?? 0)
+      setLightMode(y >= darkBottom - 120)
+    }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [cinematicRef])
 
-  // Animate mobile menu open/close
   useEffect(() => {
     if (!menuRef.current) return
     if (menuOpen) {
@@ -67,6 +76,39 @@ export function Navbar({ cinematicRef }: Props) {
     gsap.to(window, { scrollTo: `#${id}`, duration: 1.2, ease: 'power3.inOut' })
   }
 
+  /* ── Adaptive tokens ──────────────────────────────────────────── */
+  const pillStyle = {
+    maxWidth: '1080px',
+    height: '64px',
+    borderRadius: '999px',
+    background: lightMode ? 'rgba(255,255,255,0.97)' : 'rgba(255,255,255,0.04)',
+    backdropFilter: 'blur(24px)',
+    WebkitBackdropFilter: 'blur(24px)',
+    border: `1px solid ${lightMode ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.08)'}`,
+    boxShadow: lightMode
+      ? '0 4px 32px rgba(0,0,0,0.08), 0 1px 0 rgba(0,0,0,0.04)'
+      : '0 20px 60px rgba(0,0,0,0.25)',
+    transition: 'background 0.45s ease, border-color 0.45s ease, box-shadow 0.45s ease',
+  }
+
+  const linkColor = lightMode ? 'rgba(17,24,39,0.82)' : 'rgba(255,255,255,0.92)'
+  const logoTextColor = lightMode ? '#111827' : '#F5F2EB'
+  const emergencyColor = lightMode ? 'rgba(17,24,39,0.82)' : 'rgba(255,255,255,0.92)'
+
+  const hamburgerStyle = lightMode
+    ? { background: 'rgba(0,0,0,0.05)', border: '1px solid rgba(0,0,0,0.09)', color: '#111827' }
+    : { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: '#F5F2EB' }
+
+  const dropdownStyle = {
+    background: lightMode ? 'rgba(255,255,255,0.97)' : 'rgba(255,255,255,0.04)',
+    backdropFilter: 'blur(24px)',
+    WebkitBackdropFilter: 'blur(24px)',
+    border: `1px solid ${lightMode ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.08)'}`,
+    boxShadow: lightMode ? '0 8px 40px rgba(0,0,0,0.1)' : '0 20px 60px rgba(0,0,0,0.25)',
+    borderRadius: '24px',
+    padding: '8px',
+  }
+
   return (
     <nav
       ref={navRef}
@@ -78,8 +120,8 @@ export function Navbar({ cinematicRef }: Props) {
       {/* Main pill */}
       <div className="flex items-center justify-center">
         <div
-          className="glass-pill flex items-center justify-between w-full transition-all duration-500 px-4 sm:px-6 md:px-10"
-          style={{ maxWidth: '1080px', height: '64px', borderRadius: '999px' }}
+          className="flex items-center justify-between w-full px-4 sm:px-6 md:px-10 transition-all duration-500"
+          style={pillStyle}
         >
           {/* Logo */}
           <button
@@ -93,10 +135,13 @@ export function Navbar({ cinematicRef }: Props) {
               <path d="M16 11v10" stroke="#f7b93b" strokeWidth="1" strokeLinecap="round" opacity="0.5" />
             </svg>
             <span className="flex items-baseline gap-1.5">
-              <span style={{ fontFamily: 'Inter', fontWeight: 700, fontSize: '17px', color: '#F5F2EB' }}>
+              <span style={{ fontFamily: 'Inter', fontWeight: 700, fontSize: '17px', color: logoTextColor, transition: 'color 0.45s ease' }}>
                 MGM
               </span>
-              <span className="hidden sm:inline" style={{ fontFamily: 'Inter', fontWeight: 300, fontSize: '10px', letterSpacing: '0.35em', color: '#F5F2EB', textTransform: 'uppercase' as const }}>
+              <span
+                className="hidden sm:inline"
+                style={{ fontFamily: 'Inter', fontWeight: 300, fontSize: '10px', letterSpacing: '0.35em', color: logoTextColor, textTransform: 'uppercase' as const, transition: 'color 0.45s ease', opacity: 0.7 }}
+              >
                 Hospitals
               </span>
             </span>
@@ -108,8 +153,16 @@ export function Navbar({ cinematicRef }: Props) {
               <li key={id}>
                 <button
                   onClick={() => scrollTo(id)}
-                  className="nav-underline bg-transparent border-0 cursor-pointer px-4 py-2 rounded-full transition-colors duration-200 hover:bg-white/5"
-                  style={{ fontFamily: 'Inter', fontWeight: 500, fontSize: '15px', color: 'rgba(255,255,255,0.92)' }}
+                  className="nav-underline bg-transparent border-0 cursor-pointer px-4 py-2 rounded-full transition-colors duration-200"
+                  style={{
+                    fontFamily: 'Inter',
+                    fontWeight: 500,
+                    fontSize: '15px',
+                    color: linkColor,
+                    transition: 'color 0.45s ease, background 0.2s ease',
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.background = lightMode ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.06)')}
+                  onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                 >
                   {label}
                 </button>
@@ -122,8 +175,8 @@ export function Navbar({ cinematicRef }: Props) {
             {/* Emergency — desktop only */}
             <a
               href="tel:+911800000000"
-              className="hidden md:flex items-center gap-2 px-3 py-2 rounded-full transition-colors duration-200 hover:bg-white/5"
-              style={{ fontFamily: 'Inter', fontWeight: 500, fontSize: '14px', color: 'rgba(255,255,255,0.92)', textDecoration: 'none' }}
+              className="hidden md:flex items-center gap-2 px-3 py-2 rounded-full transition-colors duration-200"
+              style={{ fontFamily: 'Inter', fontWeight: 500, fontSize: '14px', color: emergencyColor, textDecoration: 'none', transition: 'color 0.45s ease' }}
               aria-label="Call emergency line"
             >
               <Phone size={15} strokeWidth={1.9} className="text-accent" aria-hidden />
@@ -156,8 +209,8 @@ export function Navbar({ cinematicRef }: Props) {
             {/* Hamburger — mobile/tablet only */}
             <button
               onClick={() => setMenuOpen(prev => !prev)}
-              className="lg:hidden flex items-center justify-center w-10 h-10 rounded-full transition-colors duration-200 hover:bg-white/10"
-              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: '#F5F2EB', cursor: 'pointer' }}
+              className="lg:hidden flex items-center justify-center w-10 h-10 rounded-full transition-colors duration-200"
+              style={{ ...hamburgerStyle, cursor: 'pointer', transition: 'background 0.45s ease, border-color 0.45s ease, color 0.45s ease' }}
               aria-label={menuOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={menuOpen}
             >
@@ -171,32 +224,26 @@ export function Navbar({ cinematicRef }: Props) {
       <div
         ref={menuRef}
         className="lg:hidden mt-2 mx-auto"
-        style={{
-          maxWidth: '1080px',
-          opacity: 0,
-          pointerEvents: 'none',
-        }}
+        style={{ maxWidth: '1080px', opacity: 0, pointerEvents: 'none' }}
       >
-        <div
-          className="glass-pill rounded-3xl overflow-hidden"
-          style={{ borderRadius: '24px', padding: '8px' }}
-        >
+        <div style={dropdownStyle}>
           {LINKS.map(({ label, id }) => (
             <button
               key={id}
               onClick={() => scrollTo(id)}
-              className="w-full text-left px-5 py-3.5 rounded-2xl transition-colors duration-200 hover:bg-white/8 flex items-center justify-between"
-              style={{ fontFamily: 'Inter', fontWeight: 500, fontSize: '15px', color: 'rgba(255,255,255,0.92)', background: 'transparent', border: 'none', cursor: 'pointer' }}
+              className="w-full text-left px-5 py-3.5 rounded-2xl flex items-center justify-between"
+              style={{ fontFamily: 'Inter', fontWeight: 500, fontSize: '15px', color: lightMode ? 'rgba(17,24,39,0.82)' : 'rgba(255,255,255,0.92)', background: 'transparent', border: 'none', cursor: 'pointer' }}
+              onMouseEnter={e => (e.currentTarget.style.background = lightMode ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.06)')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
             >
               {label}
               <ArrowRight size={14} style={{ color: '#f7b93b', opacity: 0.7 }} aria-hidden />
             </button>
           ))}
-          {/* Emergency link in mobile menu */}
           <a
             href="tel:+911800000000"
-            className="flex items-center gap-2 px-5 py-3.5 rounded-2xl transition-colors duration-200 hover:bg-white/8"
-            style={{ fontFamily: 'Inter', fontWeight: 500, fontSize: '15px', color: 'rgba(255,255,255,0.92)', textDecoration: 'none' }}
+            className="flex items-center gap-2 px-5 py-3.5 rounded-2xl"
+            style={{ fontFamily: 'Inter', fontWeight: 500, fontSize: '15px', color: lightMode ? 'rgba(17,24,39,0.82)' : 'rgba(255,255,255,0.92)', textDecoration: 'none' }}
           >
             <Phone size={15} strokeWidth={1.9} style={{ color: '#f7b93b' }} aria-hidden />
             Emergency

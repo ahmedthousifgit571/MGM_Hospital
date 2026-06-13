@@ -33,12 +33,17 @@ export function Stories() {
       className="relative min-h-screen flex flex-col justify-center"
       style={{ padding: 'clamp(6rem, 12vh, 10rem) clamp(1.5rem, 8vw, 8rem)' }}
     >
-      <div className="w-full max-w-[1400px] mx-auto">
+      <div className="w-full max-w-350 mx-auto">
         <SectionHeader index="06" eyebrow="Patient stories" title="Lives changed, in their words." className="mb-16" />
 
+
         <div className="grid lg:grid-cols-12 gap-5">
-          {/* Lead testimonial — the loud one */}
-          <blockquote data-reveal className="glass-card lg:col-span-7 p-10 md:p-14 flex flex-col">
+          {/* Lead testimonial */}
+          <blockquote
+            data-reveal
+            className="glass-card lg:col-span-7 p-10 md:p-14 flex flex-col"
+            style={{ background: '#F8FAFF' }}
+          >
             <p
               className="font-display font-medium text-soft leading-[1.2]"
               style={{ fontSize: 'clamp(1.6rem, 3vw, 2.6rem)', letterSpacing: '-0.02em' }}
@@ -51,13 +56,13 @@ export function Stories() {
             </footer>
           </blockquote>
 
-          {/* Two quieter supporting quotes, stacked */}
+          {/* Two quieter supporting quotes */}
           <div className="lg:col-span-5 flex flex-col gap-5">
             {SUPPORTING.map(({ quote, name, condition }) => (
               <blockquote
                 key={name}
                 data-reveal
-                className="flex-1 rounded-2xl border border-white/10 p-8 flex flex-col"
+                className="flex-1 rounded-2xl border border-black/8 p-8 flex flex-col bg-surface-1"
               >
                 <p className="font-body font-light text-body leading-relaxed">&ldquo;{quote}&rdquo;</p>
                 <footer className="mt-auto pt-6">
@@ -69,7 +74,7 @@ export function Stories() {
           </div>
         </div>
 
-        {/* Accreditations — quiet mono row, no gold pills (gold stays rationed) */}
+        {/* Accreditations — quiet mono row */}
         <div data-reveal className="mt-14 flex flex-wrap items-center gap-x-5 gap-y-3">
           {AWARDS.map((award, i) => (
             <span key={award} className="flex items-center gap-5">

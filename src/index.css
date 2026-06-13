@@ -4,14 +4,14 @@
   --color-accent: #f7b93b;
   --color-accent-highlight: #f9c75a;
   --color-accent-deep: #d99f22;
-  --color-soft: #F5F2EB;
-  --color-body: #E3E3E3;
-  --color-muted: #7A7A7A;
-  --color-secondary: #B5B5B5;
-  --color-surface-1: #0B0F14;
-  --color-surface-2: #0b0b0c;
-  --color-glass: rgba(255, 255, 255, 0.04);
-  --color-glass-border: rgba(255, 255, 255, 0.08);
+  --color-soft: #0D1117;
+  --color-body: #4B5563;
+  --color-muted: #9CA3AF;
+  --color-secondary: #6B7280;
+  --color-surface-1: #FFFFFF;
+  --color-surface-2: #F8FAFF;
+  --color-glass: rgba(255, 255, 255, 0.92);
+  --color-glass-border: rgba(0, 0, 0, 0.06);
 
   --font-display: "Bebas Neue", sans-serif;
   --font-body: "Inter", sans-serif;
@@ -29,8 +29,8 @@ html {
 
 body {
   margin: 0;
-  background: #0B0F14;
-  color: #E3E3E3;
+  background: #FFFFFF;
+  color: #4B5563;
   font-family: "Inter", sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
@@ -38,58 +38,54 @@ body {
 }
 
 /* ===========================================================================
-   Layered glass — $50k glassmorphism, not $5.
-   Gradient fill + saturated blur + an inner ring, with a separate top-edge
-   highlight (::before) so light appears to catch the upper rim.
+   Premium white card — clean elevation, crisp border, no blur noise.
+   Used in content sections (light context).
    =========================================================================== */
 .glass-card {
   position: relative;
-  background: rgba(12, 12, 12, 0.55);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.07);
   border-radius: 28px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    0 8px 32px rgba(0, 0, 0, 0.06);
 }
 
-/* Top-edge light catch */
+/* Subtle top-edge light catch for white cards */
 .glass-card::before {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  border-top: 1px solid rgba(255, 255, 255, 0.9);
   pointer-events: none;
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 40%);
-  mask-image: linear-gradient(to bottom, #000 0%, transparent 40%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 35%);
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 35%);
 }
 
-/* Legacy alias kept for any leftover usage */
+/* Legacy alias */
 .glass {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(0, 0, 0, 0.07);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
 
 /* ===========================================================================
-   Floating navigation pill — the centred glass capsule that holds the links.
-   Same layered-glass language as the cards, tuned thinner for a nav rail.
+   Floating navigation pill — handled inline in Navbar with adaptive styles.
+   This base class provides the shared geometry / blur foundation.
    =========================================================================== */
 .glass-pill {
-  background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
 }
 
-/* Gold accent color for the hero accent word */
+/* Gold accent color */
 .text-gold-gradient {
   color: #f7b93b;
 }
 
-/* Gentle perpetual float for the hero stats card */
+/* Gentle perpetual float */
 @keyframes soft-float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
@@ -103,17 +99,20 @@ body {
 
 /* Solid fallback when transparency is reduced */
 @media (prefers-reduced-transparency: reduce) {
-  .glass-card,
+  .glass-card {
+    background: #FFFFFF;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+  }
   .glass {
-    background: #0b0b0c;
+    background: #FFFFFF;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
 }
 
 /* ===========================================================================
-   Surgical form field — border-bottom only, 4px radius, floating mono label.
-   Uses placeholder=" " + peer so the label rises off the rule on focus/fill.
+   Surgical form field — border-bottom only, floating mono label.
+   Light-mode variant: dark text on white background.
    =========================================================================== */
 .surgical-field {
   position: relative;
@@ -122,12 +121,12 @@ body {
   width: 100%;
   background: transparent;
   border: 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.18);
   border-radius: 4px 4px 0 0;
   padding: 1.4rem 0.25rem 0.55rem;
   font-family: "Inter", sans-serif;
   font-size: 0.95rem;
-  color: #f2ecdd;
+  color: #0D1117;
   outline: none;
   transition: border-color 0.25s ease;
 }
@@ -144,7 +143,7 @@ body {
   font-family: "Inter", sans-serif;
   font-size: 0.8rem;
   letter-spacing: 0.04em;
-  color: #9a9488;
+  color: #9CA3AF;
   pointer-events: none;
   transition: all 0.2s ease;
 }
@@ -157,7 +156,7 @@ body {
   color: #f7b93b;
 }
 .surgical-input[aria-invalid="true"] {
-  border-bottom-color: rgba(248, 113, 113, 0.7);
+  border-bottom-color: rgba(239, 68, 68, 0.65);
 }
 
 /* Focus ring */
@@ -206,4 +205,115 @@ body {
   .scroll-bounce { animation: none; }
   .word-hidden { opacity: 1; filter: none; transform: none; }
   .nav-underline::after { transition: none; }
+}
+
+/* Image placeholder — tinted rectangle with dashed border */
+.img-placeholder {
+  background: linear-gradient(135deg, #EEF4FF 0%, #E8F0FE 100%);
+  border: 1.5px dashed rgba(147, 167, 226, 0.35);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.img-placeholder-label {
+  font-family: "Inter", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #CBD5E1;
+}
+
+/* Dark-section variant of image placeholder */
+[data-theme="dark"] .img-placeholder {
+  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+[data-theme="dark"] .img-placeholder-label {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+/* ===========================================================================
+   DARK SECTION THEME
+   Apply data-theme="dark" to any <section> to switch it to the dark palette.
+   All Tailwind semantic tokens (text-soft, text-muted, bg-surface-2, etc.)
+   cascade automatically — only component-level overrides are listed here.
+
+   Alternating pattern (content sections, post-cinematic):
+     01 Centres of Excellence  → dark  (hardcoded #000 — custom design)
+     02 About                  → light
+     03 Specialities           → dark  (data-theme="dark")
+     04 Facilities             → light
+     05 Doctors                → dark  (data-theme="dark")
+     06 Stories                → light
+     07 Appointment            → dark  (data-theme="dark")
+   =========================================================================== */
+
+[data-theme="dark"] {
+  --color-soft: #F5F2EB;
+  --color-body: #E3E3E3;
+  --color-muted: #7A7A7A;
+  --color-secondary: #B5B5B5;
+  --color-surface-1: #0B0F14;
+  --color-surface-2: #0b0b0c;
+  background-color: #0B0F14;
+  color: #E3E3E3;
+}
+
+/* Dark glassmorphism card */
+[data-theme="dark"] .glass-card {
+  background: rgba(12, 12, 12, 0.55);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="dark"] .glass-card::before {
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 40%);
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 40%);
+}
+
+/* Reduced transparency fallback */
+@media (prefers-reduced-transparency: reduce) {
+  [data-theme="dark"] .glass-card {
+    background: #0b0b0c;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* Surgical form fields — dark variant */
+[data-theme="dark"] .surgical-input {
+  color: #f2ecdd;
+  border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+[data-theme="dark"] .surgical-label {
+  color: #9a9488;
+}
+[data-theme="dark"] .surgical-input:focus + .surgical-label,
+[data-theme="dark"] .surgical-input:not(:placeholder-shown) + .surgical-label {
+  color: #f7b93b;
+}
+[data-theme="dark"] .surgical-input[aria-invalid="true"] {
+  border-bottom-color: rgba(248, 113, 113, 0.7);
+}
+
+/* Nameplate divider in Doctors cards */
+.nameplate-border {
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+[data-theme="dark"] .nameplate-border {
+  border-top-color: rgba(255, 255, 255, 0.07);
+}
+
+/* Section-level dividers (used in Facilities, Stories, etc.) */
+.theme-divider {
+  border-color: rgba(0, 0, 0, 0.08);
+}
+[data-theme="dark"] .theme-divider {
+  border-color: rgba(255, 255, 255, 0.08);
 }
