@@ -32,7 +32,8 @@ export function Loader({ progress, ready }: Props) {
   return (
     <div
       ref={loaderRef}
-      className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center"
+      className="fixed inset-0 z-[200] flex flex-col items-center justify-center"
+      style={{ background: '#0B0F14' }}
       aria-live="polite"
       aria-label={`Loading MGM Hospitals experience: ${pct}%`}
     >
@@ -50,7 +51,7 @@ export function Loader({ progress, ready }: Props) {
           <circle
             cx="50" cy="50" r="38"
             fill="none"
-            stroke="#D4AF37"
+            stroke="#f7b93b"
             strokeWidth="1"
             strokeLinecap="round"
             strokeDasharray={CIRC}
@@ -63,8 +64,8 @@ export function Loader({ progress, ready }: Props) {
         {/* Numeric percentage centered inside ring */}
         <div className="absolute inset-0 flex items-center justify-center">
           <span
-            className="font-body text-sm font-medium tabular-nums"
-            style={{ color: '#D4AF37' }}
+            className="text-sm font-medium tabular-nums"
+            style={{ color: '#f7b93b', fontFamily: 'Inter' }}
           >
             {pct}%
           </span>
@@ -72,12 +73,12 @@ export function Loader({ progress, ready }: Props) {
       </div>
 
       {/* Wordmark */}
-      <p className="font-display text-4xl font-black tracking-[0.15em] text-white select-none">
+      <p className="text-4xl font-bold tracking-[0.15em] text-white select-none" style={{ fontFamily: 'Inter' }}>
         MGM
       </p>
       <p
-        className="font-body text-[10px] tracking-[0.45em] mt-1 select-none"
-        style={{ color: '#94A3B8' }}
+        className="text-[10px] tracking-[0.45em] mt-1 select-none font-light"
+        style={{ color: '#94A3B8', fontFamily: 'Inter' }}
       >
         HOSPITALS
       </p>
@@ -88,15 +89,15 @@ export function Loader({ progress, ready }: Props) {
           className="h-full"
           style={{
             width: `${pct}%`,
-            background: '#D4AF37',
+            background: '#f7b93b',
             transition: 'width 0.2s linear',
           }}
         />
       </div>
 
       <p
-        className="font-body text-[9px] tracking-[0.4em] mt-3 select-none"
-        style={{ color: 'rgba(255,255,255,0.3)' }}
+        className="text-[9px] tracking-[0.4em] mt-3 select-none"
+        style={{ color: 'rgba(255,255,255,0.3)', fontFamily: 'Inter' }}
       >
         PREPARING EXPERIENCE
       </p>

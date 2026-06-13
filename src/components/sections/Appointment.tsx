@@ -1,5 +1,5 @@
 import { useRef, useState, FormEvent } from 'react'
-import { Send } from 'lucide-react'
+import { ArrowRight, Check } from 'lucide-react'
 import { useReveal } from '@/hooks/useReveal'
 
 const DEPARTMENTS = [
@@ -20,6 +20,14 @@ interface FieldError {
   phone?: string
   department?: string
   date?: string
+}
+
+/** Mono label locked in the floated position — for controls that always read as filled. */
+const fixedLabel: React.CSSProperties = {
+  top: 0,
+  fontSize: '0.62rem',
+  letterSpacing: '0.18em',
+  textTransform: 'uppercase',
 }
 
 export function Appointment() {
@@ -45,139 +53,126 @@ export function Appointment() {
     if (validate()) setSubmitted(true)
   }
 
-  const inputBase =
-    'w-full bg-transparent border rounded-xl px-4 py-3 font-body text-sm text-white placeholder-white/30 outline-none transition-colors duration-200 focus:border-[#D4AF37]'
-  const borderNormal = 'border-white/15'
-  const borderError = 'border-red-400/60'
+  const err = (msg?: string) =>
+    msg ? <p className="mt-1.5 font-body text-[11px] text-red-400" role="alert">{msg}</p> : null
 
   return (
     <section
       id="appointment"
       ref={ref}
-      className="relative min-h-screen flex items-center justify-center px-6 py-24"
+      className="relative min-h-screen flex items-center"
+      style={{ padding: 'clamp(6rem, 12vh, 10rem) clamp(1.5rem, 8vw, 8rem)' }}
     >
-      <div className="w-full max-w-5xl grid md:grid-cols-2 gap-12 items-center">
+      <div className="w-full max-w-[1400px] mx-auto grid lg:grid-cols-2 gap-x-20 gap-y-14 items-center">
         {/* Left: copy */}
         <div>
-          <p data-reveal className="font-body text-[10px] tracking-[0.5em] mb-3" style={{ color: '#D4AF37' }}>
-            GET IN TOUCH
-          </p>
+          <div data-reveal className="flex items-center gap-4 mb-8">
+            <span className="font-body text-xs text-muted">07</span>
+            <span className="font-body text-[11px] uppercase tracking-[0.32em] text-muted">Get started</span>
+          </div>
           <h2
             data-reveal
-            className="font-display font-black text-white mb-6 leading-[1.05]"
-            style={{ fontSize: 'clamp(2.2rem, 5vw, 4rem)', letterSpacing: '-0.02em' }}
+            className="font-display font-semibold text-soft leading-[0.95] mb-7"
+            style={{ fontSize: 'clamp(2.4rem, 5.5vw, 4.5rem)', letterSpacing: '-0.03em' }}
           >
-            Book an Appointment
+            Book an <span className="text-accent">appointment.</span>
           </h2>
-          <p data-reveal className="font-body text-base leading-relaxed max-w-md" style={{ color: 'rgba(255,255,255,0.55)' }}>
-            Schedule a consultation with our specialists. Our team will call you
-            within 2 hours to confirm your visit.
+          <p data-reveal className="font-body font-light text-body leading-relaxed max-w-md">
+            Tell us what you need. Our team calls back within two hours to confirm your visit.
           </p>
           <a
             data-reveal
             href="tel:+911800000000"
-            className="inline-flex items-center gap-2 mt-8 font-body text-sm font-medium"
-            style={{ color: '#D4AF37' }}
+            className="inline-block mt-10 font-body text-[12px] uppercase tracking-[0.18em] text-muted hover:text-soft transition-colors"
           >
-            Emergency? Call 1800-000-000
+            Emergency? Call 1800 000 000
           </a>
         </div>
 
-        {/* Right: form */}
-        <div
-          data-reveal
-          className="glass rounded-3xl p-8 md:p-10"
-          style={{ boxShadow: '0 32px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06)' }}
-        >
+        {/* Right: surgical form */}
+        <div data-reveal className="glass-card p-8 md:p-12">
           {submitted ? (
-            <div className="text-center py-10">
-              <div
-                className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-6"
-                style={{ background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.3)' }}
-              >
-                <Send size={22} style={{ color: '#D4AF37' }} aria-hidden />
+            <div className="text-center py-12">
+              <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-6 bg-accent">
+                <Check size={24} className="text-black" aria-hidden />
               </div>
-              <h3 className="font-display font-bold text-white text-xl mb-2">Appointment Requested</h3>
-              <p className="font-body text-sm" style={{ color: 'rgba(255,255,255,0.55)' }}>
-                Our team will call you within 2 hours to confirm.
-              </p>
+              <h3 className="font-display font-medium text-soft text-2xl mb-3">Appointment requested</h3>
+              <p className="font-body font-light text-muted">Our team will call you within two hours to confirm.</p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4" aria-label="Appointment booking form">
-              <div>
+            <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-7" aria-label="Appointment booking form">
+              <div className="surgical-field">
                 <input
-                  type="text"
-                  placeholder="Full Name"
-                  aria-label="Full Name"
-                  aria-invalid={!!errors.name}
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className={`${inputBase} ${errors.name ? borderError : borderNormal}`}
+                  id="ap-name" type="text" placeholder=" " className="surgical-input"
+                  aria-label="Full name" aria-invalid={!!errors.name}
+                  value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
                 />
-                {errors.name && <p className="mt-1 text-xs text-red-400" role="alert">{errors.name}</p>}
+                <label htmlFor="ap-name" className="surgical-label">Full name</label>
+                {err(errors.name)}
               </div>
 
-              <div>
+              <div className="surgical-field">
                 <input
-                  type="tel"
-                  placeholder="Phone Number"
-                  aria-label="Phone Number"
-                  aria-invalid={!!errors.phone}
-                  value={form.phone}
-                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  className={`${inputBase} ${errors.phone ? borderError : borderNormal}`}
+                  id="ap-phone" type="tel" placeholder=" " className="surgical-input"
+                  aria-label="Phone number" aria-invalid={!!errors.phone}
+                  value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 />
-                {errors.phone && <p className="mt-1 text-xs text-red-400" role="alert">{errors.phone}</p>}
+                <label htmlFor="ap-phone" className="surgical-label">Phone number</label>
+                {err(errors.phone)}
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
+              <div className="grid grid-cols-2 gap-5">
+                <div className="surgical-field">
                   <select
-                    aria-label="Department"
-                    aria-invalid={!!errors.department}
-                    value={form.department}
-                    onChange={(e) => setForm({ ...form, department: e.target.value })}
-                    className={`${inputBase} ${errors.department ? borderError : borderNormal}`}
-                    style={{ color: form.department ? '#fff' : 'rgba(255,255,255,0.3)' }}
+                    id="ap-dept" className="surgical-input" aria-label="Department" aria-invalid={!!errors.department}
+                    value={form.department} onChange={(e) => setForm({ ...form, department: e.target.value })}
                   >
-                    <option value="" disabled style={{ background: '#0a0a0a' }}>Department</option>
+                    <option value="" disabled hidden></option>
                     {DEPARTMENTS.map((d) => (
-                      <option key={d} value={d} style={{ background: '#0a0a0a', color: '#fff' }}>{d}</option>
+                      <option key={d} value={d} style={{ background: '#0b0b0c', color: '#f2ecdd' }}>{d}</option>
                     ))}
                   </select>
-                  {errors.department && <p className="mt-1 text-xs text-red-400" role="alert">{errors.department}</p>}
+                  <label
+                    htmlFor="ap-dept" className="surgical-label"
+                    style={{ ...fixedLabel, color: form.department ? '#f7b93b' : '#9a9488' }}
+                  >
+                    Department
+                  </label>
+                  {err(errors.department)}
                 </div>
-                <div>
+                <div className="surgical-field">
                   <input
-                    type="date"
-                    aria-label="Preferred date"
-                    aria-invalid={!!errors.date}
-                    value={form.date}
+                    id="ap-date" type="date" className="surgical-input" aria-label="Preferred date" aria-invalid={!!errors.date}
                     min={new Date().toISOString().split('T')[0]}
-                    onChange={(e) => setForm({ ...form, date: e.target.value })}
-                    className={`${inputBase} ${errors.date ? borderError : borderNormal}`}
+                    value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })}
                     style={{ colorScheme: 'dark' }}
                   />
-                  {errors.date && <p className="mt-1 text-xs text-red-400" role="alert">{errors.date}</p>}
+                  <label
+                    htmlFor="ap-date" className="surgical-label"
+                    style={{ ...fixedLabel, color: form.date ? '#f7b93b' : '#9a9488' }}
+                  >
+                    Preferred date
+                  </label>
+                  {err(errors.date)}
                 </div>
               </div>
 
-              <textarea
-                rows={3}
-                placeholder="Additional notes (optional)"
-                aria-label="Additional notes"
-                value={form.message}
-                onChange={(e) => setForm({ ...form, message: e.target.value })}
-                className={`${inputBase} ${borderNormal} resize-none`}
-              />
+              <div className="surgical-field">
+                <textarea
+                  id="ap-notes" rows={2} placeholder=" " className="surgical-input resize-none"
+                  aria-label="Additional notes"
+                  value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })}
+                />
+                <label htmlFor="ap-notes" className="surgical-label">Notes (optional)</label>
+              </div>
 
+              {/* The only gold-filled element in this section */}
               <button
                 type="submit"
-                className="mt-2 w-full py-3.5 rounded-xl font-body font-semibold text-sm tracking-wide flex items-center justify-center gap-2 transition-all duration-200 hover:brightness-110 hover:scale-[1.02]"
-                style={{ background: '#D4AF37', color: '#000' }}
+                className="group mt-3 w-full py-4 rounded-md font-body font-semibold text-sm tracking-wide flex items-center justify-center gap-3 bg-accent text-black transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98]"
               >
-                <Send size={15} aria-hidden />
-                Confirm Appointment
+                Confirm appointment
+                <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden />
               </button>
             </form>
           )}

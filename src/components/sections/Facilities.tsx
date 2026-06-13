@@ -1,12 +1,13 @@
 import { useRef } from 'react'
 import { Cpu, Building2, Activity, Microscope } from 'lucide-react'
 import { useReveal } from '@/hooks/useReveal'
+import { SectionHeader } from '@/components/SectionHeader'
 
 const FACILITIES = [
-  { icon: Cpu,        title: 'Advanced Technology',  desc: 'AI-assisted diagnostics, robotic surgery suites, and precision imaging.' },
-  { icon: Building2,  title: 'Modern Infrastructure', desc: '500-bed campus designed for healing, comfort, and rapid response.' },
-  { icon: Activity,   title: 'Critical Care',         desc: 'Fully-equipped ICUs and 24/7 emergency departments staffed by specialists.' },
-  { icon: Microscope, title: 'World-Class Equipment',  desc: 'Cutting-edge labs and equipment meeting global accreditation standards.' },
+  { icon: Cpu,        title: 'Advanced Technology',  desc: 'AI-assisted diagnostics, robotic surgery, and precision imaging.' },
+  { icon: Building2,  title: 'Modern Infrastructure', desc: 'A 500-bed campus built for healing, comfort, and fast response.' },
+  { icon: Activity,   title: 'Critical Care',         desc: 'ICUs and emergency floors staffed by specialists around the clock.' },
+  { icon: Microscope, title: 'Accredited Labs',       desc: 'Labs and equipment held to global accreditation standards.' },
 ]
 
 export function Facilities() {
@@ -15,41 +16,42 @@ export function Facilities() {
 
   return (
     <section
+      id="departments"
       ref={ref}
-      className="relative min-h-screen flex flex-col justify-center px-8 md:px-20 py-24"
+      className="relative min-h-screen flex items-center"
+      style={{ padding: 'clamp(6rem, 12vh, 10rem) clamp(1.5rem, 8vw, 8rem)' }}
     >
-      <p data-reveal className="font-body text-[10px] tracking-[0.5em] mb-3" style={{ color: '#D4AF37' }}>
-        FACILITIES & TECHNOLOGY
-      </p>
-      <h2
-        data-reveal
-        className="font-display font-black text-white mb-12 max-w-2xl"
-        style={{ fontSize: 'clamp(1.8rem, 4.5vw, 3.5rem)', letterSpacing: '-0.02em' }}
-      >
-        The Future of Healthcare, Today
-      </h2>
+      <div className="w-full max-w-[1400px] mx-auto grid lg:grid-cols-12 gap-x-12 gap-y-16 items-start">
+        <div className="lg:col-span-5">
+          <SectionHeader index="04" eyebrow="Facilities & technology" title="Built for the moments that matter." />
+        </div>
 
-      <div className="grid md:grid-cols-2 gap-5 max-w-4xl">
-        {FACILITIES.map(({ icon: Icon, title, desc }) => (
-          <div
-            key={title}
-            data-reveal
-            className="glass rounded-2xl p-8 flex gap-5 items-start hover:bg-white/12 transition-colors duration-300"
-          >
+        {/* Numbered editorial list — no cards, sparse dividers, generous air */}
+        <div className="lg:col-span-6 lg:col-start-7">
+          {FACILITIES.map(({ icon: Icon, title, desc }, i) => (
             <div
-              className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: 'rgba(212,175,55,0.12)' }}
+              key={title}
+              data-reveal
+              className={`flex gap-8 py-9 ${i > 0 ? 'border-t border-white/10' : ''}`}
             >
-              <Icon size={20} style={{ color: '#D4AF37' }} aria-hidden />
+              <span className="font-body text-sm text-accent pt-1 w-8 shrink-0">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <div>
+                <div className="flex items-center gap-3 mb-3">
+                  <Icon size={20} strokeWidth={1.5} className="text-soft" aria-hidden />
+                  <h3
+                    className="font-display font-medium text-soft"
+                    style={{ fontSize: 'clamp(1.3rem, 2.2vw, 1.75rem)', letterSpacing: '-0.02em' }}
+                  >
+                    {title}
+                  </h3>
+                </div>
+                <p className="font-body font-light text-muted leading-relaxed max-w-md">{desc}</p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-display font-bold text-white text-lg mb-2">{title}</h3>
-              <p className="font-body text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                {desc}
-              </p>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   )

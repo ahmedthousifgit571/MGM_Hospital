@@ -1,26 +1,27 @@
 import { useRef } from 'react'
-import { Quote } from 'lucide-react'
 import { useReveal } from '@/hooks/useReveal'
+import { SectionHeader } from '@/components/SectionHeader'
 
-const TESTIMONIALS = [
+const LEAD = {
+  quote: 'The doctors explained every step before they took it. I never once felt like a number.',
+  name: 'Rohan Sharma',
+  condition: 'Cardiac Bypass Surgery',
+}
+
+const SUPPORTING = [
   {
-    quote: 'The care I received at MGM was extraordinary. The doctors explained everything clearly and the staff made me feel genuinely valued.',
-    name: 'Rohan Sharma',
-    condition: 'Cardiac Bypass Surgery',
-  },
-  {
-    quote: "World-class technology paired with doctors who actually listen. I traveled 400 km because MGM's reputation is that good — and it's every bit deserved.",
+    quote: 'I travelled 400 km for this team. Every bit of the reputation is deserved.',
     name: 'Meena Pillai',
     condition: 'Neurosurgery',
   },
   {
-    quote: 'From admission to discharge, every detail was handled with compassion. My family never felt alone through the entire journey.',
+    quote: 'From admission to discharge, my family was never left in the dark.',
     name: 'David Thomas',
     condition: 'Orthopedic Care',
   },
 ]
 
-const AWARDS = ['NABH Accredited', 'JCI Certified', 'Top Hospital 2024', 'ISO 9001', '15+ Specialities']
+const AWARDS = ['NABH Accredited', 'JCI Certified', 'ISO 9001', '15+ Specialities']
 
 export function Stories() {
   const ref = useRef<HTMLElement>(null)
@@ -29,52 +30,54 @@ export function Stories() {
   return (
     <section
       ref={ref}
-      className="relative min-h-screen flex flex-col justify-center px-8 md:px-20 py-24"
+      className="relative min-h-screen flex flex-col justify-center"
+      style={{ padding: 'clamp(6rem, 12vh, 10rem) clamp(1.5rem, 8vw, 8rem)' }}
     >
-      <p data-reveal className="font-body text-[10px] tracking-[0.5em] mb-3" style={{ color: '#D4AF37' }}>
-        PATIENT STORIES
-      </p>
-      <h2
-        data-reveal
-        className="font-display font-black text-white mb-12"
-        style={{ fontSize: 'clamp(1.8rem, 4.5vw, 3.5rem)', letterSpacing: '-0.02em' }}
-      >
-        Lives Changed
-      </h2>
+      <div className="w-full max-w-[1400px] mx-auto">
+        <SectionHeader index="06" eyebrow="Patient stories" title="Lives changed, in their words." className="mb-16" />
 
-      <div className="grid md:grid-cols-3 gap-5 mb-12">
-        {TESTIMONIALS.map(({ quote, name, condition }) => (
-          <div
-            key={name}
-            data-reveal
-            className="glass rounded-2xl p-7 flex flex-col gap-4"
-          >
-            <Quote size={22} style={{ color: '#D4AF37' }} aria-hidden />
-            <p className="font-body text-sm leading-relaxed italic" style={{ color: 'rgba(255,255,255,0.78)' }}>
-              &ldquo;{quote}&rdquo;
+        <div className="grid lg:grid-cols-12 gap-5">
+          {/* Lead testimonial — the loud one */}
+          <blockquote data-reveal className="glass-card lg:col-span-7 p-10 md:p-14 flex flex-col">
+            <p
+              className="font-display font-medium text-soft leading-[1.2]"
+              style={{ fontSize: 'clamp(1.6rem, 3vw, 2.6rem)', letterSpacing: '-0.02em' }}
+            >
+              &ldquo;{LEAD.quote}&rdquo;
             </p>
-            <div className="mt-auto pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-              <p className="font-display font-bold text-white text-sm">{name}</p>
-              <p className="font-body text-xs mt-0.5" style={{ color: '#D4AF37' }}>{condition}</p>
-            </div>
-          </div>
-        ))}
-      </div>
+            <footer className="mt-auto pt-10">
+              <p className="font-display font-medium text-soft">{LEAD.name}</p>
+              <p className="font-body text-[11px] uppercase tracking-[0.16em] mt-2 text-muted">{LEAD.condition}</p>
+            </footer>
+          </blockquote>
 
-      <div data-reveal className="flex flex-wrap gap-3">
-        {AWARDS.map((award) => (
-          <span
-            key={award}
-            className="rounded-full px-5 py-2 font-body text-xs font-medium"
-            style={{
-              background: 'rgba(212,175,55,0.1)',
-              border: '1px solid rgba(212,175,55,0.3)',
-              color: '#D4AF37',
-            }}
-          >
-            {award}
-          </span>
-        ))}
+          {/* Two quieter supporting quotes, stacked */}
+          <div className="lg:col-span-5 flex flex-col gap-5">
+            {SUPPORTING.map(({ quote, name, condition }) => (
+              <blockquote
+                key={name}
+                data-reveal
+                className="flex-1 rounded-2xl border border-white/10 p-8 flex flex-col"
+              >
+                <p className="font-body font-light text-body leading-relaxed">&ldquo;{quote}&rdquo;</p>
+                <footer className="mt-auto pt-6">
+                  <p className="font-display font-medium text-soft text-sm">{name}</p>
+                  <p className="font-body text-[11px] uppercase tracking-[0.16em] mt-1.5 text-muted">{condition}</p>
+                </footer>
+              </blockquote>
+            ))}
+          </div>
+        </div>
+
+        {/* Accreditations — quiet mono row, no gold pills (gold stays rationed) */}
+        <div data-reveal className="mt-14 flex flex-wrap items-center gap-x-5 gap-y-3">
+          {AWARDS.map((award, i) => (
+            <span key={award} className="flex items-center gap-5">
+              {i > 0 && <span className="text-muted/40" aria-hidden>·</span>}
+              <span className="font-body text-[11px] uppercase tracking-[0.2em] text-muted">{award}</span>
+            </span>
+          ))}
+        </div>
       </div>
     </section>
   )

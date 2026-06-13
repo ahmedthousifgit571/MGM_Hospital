@@ -1,13 +1,14 @@
 import { useRef } from 'react'
 import { Heart, Brain, Bone, Baby, Zap } from 'lucide-react'
 import { useReveal } from '@/hooks/useReveal'
+import { SectionHeader } from '@/components/SectionHeader'
 
 const SPECS = [
-  { icon: Heart, name: 'Cardiology',        desc: 'Advanced cardiac care & interventional procedures' },
-  { icon: Brain, name: 'Neurology',          desc: 'Comprehensive brain & nervous system treatment' },
-  { icon: Bone,  name: 'Orthopedics',        desc: 'Joint replacement, spine & sports medicine' },
-  { icon: Baby,  name: 'Pediatrics',         desc: 'Compassionate care for children of all ages' },
-  { icon: Zap,   name: 'Emergency Medicine', desc: '24/7 critical care & trauma response' },
+  { icon: Heart, name: 'Cardiology',         desc: 'Diagnosis, intervention, and recovery for the heart.' },
+  { icon: Brain, name: 'Neurology',          desc: 'Care for the brain, spine, and nervous system.' },
+  { icon: Bone,  name: 'Orthopedics',        desc: 'Joint replacement, spine, and sports-injury recovery.' },
+  { icon: Baby,  name: 'Pediatrics',         desc: 'Calm, careful medicine for children of every age.' },
+  { icon: Zap,   name: 'Emergency Medicine', desc: 'Trauma and critical care, ready every hour of the day.' },
 ]
 
 export function Specialities() {
@@ -18,42 +19,40 @@ export function Specialities() {
     <section
       id="specialities"
       ref={ref}
-      className="relative min-h-screen flex flex-col justify-center px-8 md:px-20 py-24"
+      className="relative min-h-screen flex flex-col justify-center"
+      style={{ padding: 'clamp(6rem, 12vh, 10rem) clamp(1.5rem, 8vw, 8rem)' }}
     >
-      <p data-reveal className="font-body text-[10px] tracking-[0.5em] mb-3" style={{ color: '#D4AF37' }}>
-        OUR SPECIALITIES
-      </p>
-      <h2
-        data-reveal
-        className="font-display font-black text-white mb-12"
-        style={{ fontSize: 'clamp(1.8rem, 4.5vw, 3.5rem)', letterSpacing: '-0.02em' }}
-      >
-        World-Class Clinical Excellence
-      </h2>
+      <div className="w-full max-w-[1400px] mx-auto">
+        <SectionHeader index="03" eyebrow="Our specialities" title="Depth in every department." className="mb-16" />
 
-      <div
-        data-reveal
-        className="flex gap-5 overflow-x-auto pb-4 -mx-1 px-1"
-        style={{ scrollbarWidth: 'none' }}
-      >
-        {SPECS.map(({ icon: Icon, name, desc }) => (
-          <div
-            key={name}
-            className="glass rounded-2xl p-7 flex-shrink-0 w-60 md:w-72 flex flex-col gap-4
-                       hover:bg-white/12 hover:-translate-y-1 transition-all duration-300"
-          >
+        {/* 5 wide cells — 2 + 2 + 1 full-width (bento rhythm) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {SPECS.map(({ icon: Icon, name, desc }, i) => (
             <div
-              className="w-12 h-12 rounded-xl flex items-center justify-center"
-              style={{ background: 'rgba(212,175,55,0.12)' }}
+              key={name}
+              data-reveal
+              className={`glass-card p-8 md:p-10 flex flex-col gap-6 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-1 ${
+                i === SPECS.length - 1 ? 'md:col-span-2' : ''
+              }`}
             >
-              <Icon size={20} style={{ color: '#D4AF37' }} aria-hidden />
+              <div className="flex items-start justify-between">
+                <Icon size={26} strokeWidth={1.5} className="text-soft" aria-hidden />
+                <span className="font-body text-xs text-muted">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+              </div>
+              <div>
+                <h3
+                  className="font-display font-medium text-soft mb-2"
+                  style={{ fontSize: 'clamp(1.5rem, 2.6vw, 2.1rem)', letterSpacing: '-0.02em' }}
+                >
+                  {name}
+                </h3>
+                <p className="font-body font-light text-muted leading-relaxed max-w-md">{desc}</p>
+              </div>
             </div>
-            <h3 className="font-display font-bold text-white text-lg leading-tight">{name}</h3>
-            <p className="font-body text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>
-              {desc}
-            </p>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   )

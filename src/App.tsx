@@ -23,7 +23,7 @@ export default function App() {
   })
 
   return (
-    <div className="bg-black">
+    <div className="bg-surface-1">
       {/* Loading screen */}
       <Loader progress={progress} ready={ready} />
 
@@ -41,12 +41,20 @@ export default function App() {
             role="presentation"
           />
 
-          {/* Scrim for hero-text legibility over the bright facade */}
+          {/* Left-to-right dark overlay per design spec */}
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
               background:
-                'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.12) 42%, rgba(0,0,0,0.62) 100%)',
+                'linear-gradient(90deg, rgba(6,10,15,0.72) 0%, rgba(6,10,15,0.52) 40%, rgba(6,10,15,0.2) 70%, rgba(6,10,15,0.04) 100%)',
+            }}
+          />
+          {/* Top + bottom vignette */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background:
+                'linear-gradient(to bottom, rgba(6,10,15,0.38) 0%, rgba(6,10,15,0) 18%, rgba(6,10,15,0) 62%, rgba(6,10,15,0.62) 100%)',
             }}
           />
 

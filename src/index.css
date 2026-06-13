@@ -1,14 +1,19 @@
-@import url("https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
 
 @theme {
-  --color-accent: #d4af37;
-  --color-secondary: #94a3b8;
-  --color-glass: rgba(255, 255, 255, 0.08);
-  --color-glass-border: rgba(255, 255, 255, 0.12);
+  --color-accent: #f7b93b;
+  --color-accent-highlight: #f9c75a;
+  --color-accent-deep: #d99f22;
+  --color-soft: #F5F2EB;
+  --color-body: #E3E3E3;
+  --color-muted: #7A7A7A;
+  --color-secondary: #B5B5B5;
+  --color-surface-1: #0B0F14;
+  --color-surface-2: #0b0b0c;
+  --color-glass: rgba(255, 255, 255, 0.04);
+  --color-glass-border: rgba(255, 255, 255, 0.08);
 
-  --font-display: "Satoshi", sans-serif;
+  --font-display: "Bebas Neue", sans-serif;
   --font-body: "Inter", sans-serif;
 }
 
@@ -24,33 +29,161 @@ html {
 
 body {
   margin: 0;
-  background: #000;
-  color: #fff;
+  background: #0B0F14;
+  color: #E3E3E3;
   font-family: "Inter", sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Glass surface utility */
+/* ===========================================================================
+   Layered glass — $50k glassmorphism, not $5.
+   Gradient fill + saturated blur + an inner ring, with a separate top-edge
+   highlight (::before) so light appears to catch the upper rim.
+   =========================================================================== */
+.glass-card {
+  position: relative;
+  background: rgba(12, 12, 12, 0.55);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+/* Top-edge light catch */
+.glass-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 40%);
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 40%);
+}
+
+/* Legacy alias kept for any leftover usage */
 .glass {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
 
-.glass-dark {
-  background: rgba(0, 0, 0, 0.4);
+/* ===========================================================================
+   Floating navigation pill — the centred glass capsule that holds the links.
+   Same layered-glass language as the cards, tuned thinner for a nav rail.
+   =========================================================================== */
+.glass-pill {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+/* Gold accent color for the hero accent word */
+.text-gold-gradient {
+  color: #f7b93b;
+}
+
+/* Gentle perpetual float for the hero stats card */
+@keyframes soft-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.soft-float {
+  animation: soft-float 6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .soft-float { animation: none; }
+}
+
+/* Solid fallback when transparency is reduced */
+@media (prefers-reduced-transparency: reduce) {
+  .glass-card,
+  .glass {
+    background: #0b0b0c;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* ===========================================================================
+   Surgical form field — border-bottom only, 4px radius, floating mono label.
+   Uses placeholder=" " + peer so the label rises off the rule on focus/fill.
+   =========================================================================== */
+.surgical-field {
+  position: relative;
+}
+.surgical-input {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px 4px 0 0;
+  padding: 1.4rem 0.25rem 0.55rem;
+  font-family: "Inter", sans-serif;
+  font-size: 0.95rem;
+  color: #f2ecdd;
+  outline: none;
+  transition: border-color 0.25s ease;
+}
+.surgical-input:focus {
+  border-bottom-color: #f7b93b;
+}
+.surgical-input::placeholder {
+  color: transparent;
+}
+.surgical-label {
+  position: absolute;
+  left: 0.25rem;
+  top: 1.4rem;
+  font-family: "Inter", sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: #9a9488;
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
+.surgical-input:focus + .surgical-label,
+.surgical-input:not(:placeholder-shown) + .surgical-label {
+  top: 0;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #f7b93b;
+}
+.surgical-input[aria-invalid="true"] {
+  border-bottom-color: rgba(248, 113, 113, 0.7);
 }
 
 /* Focus ring */
 :focus-visible {
-  outline: 2px solid #d4af37;
+  outline: 2px solid #f7b93b;
   outline-offset: 2px;
+}
+
+/* Nav link underline — scaleX from center */
+.nav-underline {
+  position: relative;
+}
+.nav-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.nav-underline:hover::after {
+  transform: scaleX(1);
 }
 
 /* Scroll indicator pulse */
@@ -58,26 +191,19 @@ body {
   0%, 100% { transform: translateY(0); opacity: 1; }
   50% { transform: translateY(8px); opacity: 0.4; }
 }
-
 .scroll-bounce {
   animation: scroll-bounce 1.8s ease-in-out infinite;
 }
 
-/* Word reveal animation base state */
+/* Word reveal base state */
 .word-hidden {
   opacity: 0;
   filter: blur(8px);
   transform: translateY(16px);
 }
 
-/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .scroll-bounce {
-    animation: none;
-  }
-  .word-hidden {
-    opacity: 1;
-    filter: none;
-    transform: none;
-  }
+  .scroll-bounce { animation: none; }
+  .word-hidden { opacity: 1; filter: none; transform: none; }
+  .nav-underline::after { transition: none; }
 }
