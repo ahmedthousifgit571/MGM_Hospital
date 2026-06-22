@@ -3,13 +3,21 @@ node_modules/
 
 # Agent skills (local only)
 .agents/
+AGENTS.MD
+CLAUDE.MD
 
-# Build output
-dist/
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
 
 # Environment variables
 .env
 .env.*
+.env.example
 
 # Local docs / guides
 CINEMATIC_SCROLL_GUIDE.md
@@ -19,7 +27,12 @@ CINEMATIC_SCROLL_GUIDE.md
 Thumbs.db
 *.log
 
-# Vite
-.vite/
+# TypeScript build info
+*.tsbuildinfo
+next-env.d.ts
 
+# vercel
+.vercel
+
+# Design docs (local)
 DESIGN.md
