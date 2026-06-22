@@ -27,7 +27,9 @@ export async function proxy(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  const isProtected = protectedPrefixes.some((p) => request.nextUrl.pathname.startsWith(p));
+  const isProtected = protectedPrefixes.some(
+    (p) => request.nextUrl.pathname === p || request.nextUrl.pathname.startsWith(`${p}/`)
+  );
   if (isProtected && !user) {
     return NextResponse.redirect(new URL('/login', request.url));
   }

@@ -10,17 +10,17 @@ interface Props {
   cinematicRef: React.RefObject<HTMLElement | null>
 }
 
-const LINKS: { label: string; id: string; dropdown?: { label: string; id: string }[] }[] = [
-  { label: 'About Us', id: 'about' },
+const LINKS: { label: string; href: string; dropdown?: { label: string; href: string }[] }[] = [
+  { label: 'About Us', href: '/about' },
   {
     label: 'Services',
-    id: 'specialities',
+    href: '/departments',
     dropdown: [
-      { label: 'Departments', id: 'departments' },
-      { label: 'Doctors', id: 'doctors' },
+      { label: 'Departments', href: '/departments' },
+      { label: 'Doctors', href: '/doctors' },
     ],
   },
-  { label: 'Contact', id: 'appointment' },
+  { label: 'Contact', href: '/contact' },
 ]
 
 export function Navbar({ cinematicRef }: Props) {
@@ -92,10 +92,7 @@ export function Navbar({ cinematicRef }: Props) {
     }
   }, [menuOpen])
 
-  const scrollTo = (id: string) => {
-    setMenuOpen(false)
-    gsap.to(window, { scrollTo: `#${id}`, duration: 1.2, ease: 'power3.inOut' })
-  }
+  const closeMenu = () => setMenuOpen(false)
 
   /* ── Adaptive tokens ──────────────────────────────────────────── */
   const pillStyle = {
@@ -170,21 +167,23 @@ export function Navbar({ cinematicRef }: Props) {
 
           {/* Centre links — desktop only */}
           <ul className="hidden lg:flex items-center gap-1 list-none m-0 p-0">
-            {LINKS.map(({ label, id, dropdown }) => (
+            {LINKS.map(({ label, href, dropdown }) => (
               <li
-                key={id}
+                key={href}
                 className="relative"
                 onMouseEnter={dropdown ? openServices : undefined}
                 onMouseLeave={dropdown ? scheduleCloseServices : undefined}
               >
-                <button
-                  onClick={() => scrollTo(id)}
+                <Link
+                  href={href}
+                  onClick={closeMenu}
                   className="nav-underline bg-transparent border-0 cursor-pointer px-4 py-2 rounded-full transition-colors duration-200 flex items-center gap-1"
                   style={{
                     fontFamily: 'Inter',
                     fontWeight: 500,
                     fontSize: '15px',
                     color: linkColor,
+                    textDecoration: 'none',
                     transition: 'color 0.45s ease, background 0.2s ease',
                   }}
                   onMouseEnter={e => (e.currentTarget.style.background = lightMode ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.06)')}
@@ -198,7 +197,7 @@ export function Navbar({ cinematicRef }: Props) {
                       aria-hidden
                     />
                   )}
-                </button>
+                </Link>
 
                 {dropdown && (
                   <div
@@ -215,16 +214,17 @@ export function Navbar({ cinematicRef }: Props) {
                     }}
                   >
                     {dropdown.map(item => (
-                      <button
-                        key={item.id}
-                        onClick={() => scrollTo(item.id)}
-                        className="w-full text-left px-4 py-2.5 rounded-2xl"
-                        style={{ fontFamily: 'Inter', fontWeight: 500, fontSize: '14px', color: linkColor, background: 'transparent', border: 'none', cursor: 'pointer' }}
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={closeMenu}
+                        className="w-full text-left px-4 py-2.5 rounded-2xl block"
+                        style={{ fontFamily: 'Inter', fontWeight: 500, fontSize: '14px', color: linkColor, background: 'transparent', border: 'none', cursor: 'pointer', textDecoration: 'none' }}
                         onMouseEnter={e => (e.currentTarget.style.background = lightMode ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.06)')}
                         onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                       >
                         {item.label}
-                      </button>
+                      </Link>
                     ))}
                   </div>
                 )}
@@ -248,8 +248,9 @@ export function Navbar({ cinematicRef }: Props) {
           {/* Right cluster */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {/* Book button */}
-            <button
-              onClick={() => scrollTo('appointment')}
+            <Link
+              href="/contact"
+              onClick={closeMenu}
               className="group flex items-center gap-1.5 sm:gap-2 transition-all duration-200 active:scale-[0.97] hover:scale-[1.03]"
               style={{
                 background: '#f7b93b',
@@ -263,12 +264,13 @@ export function Navbar({ cinematicRef }: Props) {
                 cursor: 'pointer',
                 boxShadow: '0 8px 24px rgba(247,185,59,0.22)',
                 whiteSpace: 'nowrap',
+                textDecoration: 'none',
               }}
             >
               <span className="hidden sm:inline" style={{ fontSize: '14px' }}>Book Consultation</span>
               <span className="inline sm:hidden">Consult</span>
               <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-0.5 shrink-0" aria-hidden />
-            </button>
+            </Link>
 
             {/* Hamburger — mobile/tablet only */}
             <button
@@ -291,9 +293,9 @@ export function Navbar({ cinematicRef }: Props) {
         style={{ maxWidth: '1080px', opacity: 0, pointerEvents: 'none' }}
       >
         <div style={dropdownStyle}>
-          {LINKS.map(({ label, id, dropdown }) =>
+          {LINKS.map(({ label, href, dropdown }) =>
             dropdown ? (
-              <div key={id}>
+              <div key={href}>
                 <button
                   onClick={() => setMobileServicesOpen(prev => !prev)}
                   className="w-full text-left px-5 py-3.5 rounded-2xl flex items-center justify-between"
@@ -311,33 +313,35 @@ export function Navbar({ cinematicRef }: Props) {
                 {mobileServicesOpen && (
                   <div className="pl-3">
                     {dropdown.map(item => (
-                      <button
-                        key={item.id}
-                        onClick={() => scrollTo(item.id)}
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={closeMenu}
                         className="w-full text-left px-5 py-3 rounded-2xl flex items-center justify-between"
-                        style={{ fontFamily: 'Inter', fontWeight: 500, fontSize: '14px', color: lightMode ? 'rgba(17,24,39,0.7)' : 'rgba(255,255,255,0.78)', background: 'transparent', border: 'none', cursor: 'pointer' }}
+                        style={{ fontFamily: 'Inter', fontWeight: 500, fontSize: '14px', color: lightMode ? 'rgba(17,24,39,0.7)' : 'rgba(255,255,255,0.78)', background: 'transparent', border: 'none', cursor: 'pointer', textDecoration: 'none' }}
                         onMouseEnter={e => (e.currentTarget.style.background = lightMode ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.06)')}
                         onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                       >
                         {item.label}
                         <ArrowRight size={13} style={{ color: '#f7b93b', opacity: 0.7 }} aria-hidden />
-                      </button>
+                      </Link>
                     ))}
                   </div>
                 )}
               </div>
             ) : (
-              <button
-                key={id}
-                onClick={() => scrollTo(id)}
+              <Link
+                key={href}
+                href={href}
+                onClick={closeMenu}
                 className="w-full text-left px-5 py-3.5 rounded-2xl flex items-center justify-between"
-                style={{ fontFamily: 'Inter', fontWeight: 500, fontSize: '15px', color: lightMode ? 'rgba(17,24,39,0.82)' : 'rgba(255,255,255,0.92)', background: 'transparent', border: 'none', cursor: 'pointer' }}
+                style={{ fontFamily: 'Inter', fontWeight: 500, fontSize: '15px', color: lightMode ? 'rgba(17,24,39,0.82)' : 'rgba(255,255,255,0.92)', background: 'transparent', border: 'none', cursor: 'pointer', textDecoration: 'none' }}
                 onMouseEnter={e => (e.currentTarget.style.background = lightMode ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.06)')}
                 onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
               >
                 {label}
                 <ArrowRight size={14} style={{ color: '#f7b93b', opacity: 0.7 }} aria-hidden />
-              </button>
+              </Link>
             ),
           )}
           <Link
