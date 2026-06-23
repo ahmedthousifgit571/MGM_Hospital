@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import gsap from 'gsap'
-import { ArrowRight, ChevronDown, Menu, X, User } from 'lucide-react'
+import { ArrowRight, ChevronDown, Menu, X } from 'lucide-react'
 
 interface Props {
   cinematicRef: React.RefObject<HTMLElement | null>
@@ -230,19 +230,6 @@ export function Navbar({ cinematicRef }: Props) {
                 )}
               </li>
             ))}
-            <li>
-              <Link
-                href="/login"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-full transition-colors duration-200"
-                style={{ fontFamily: 'Inter', fontWeight: 500, fontSize: '15px', color: linkColor, textDecoration: 'none', transition: 'color 0.45s ease, background 0.2s ease' }}
-                onMouseEnter={e => (e.currentTarget.style.background = lightMode ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.06)')}
-                onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-              >
-                <User size={15} strokeWidth={1.9} className="text-accent" aria-hidden />
-                Patient Login
-              </Link>
-            </li>
           </ul>
 
           {/* Right cluster */}
@@ -344,17 +331,6 @@ export function Navbar({ cinematicRef }: Props) {
               </Link>
             ),
           )}
-          <Link
-            href="/login"
-            onClick={() => setMenuOpen(false)}
-            className="w-full text-left px-5 py-3.5 rounded-2xl flex items-center justify-between"
-            style={{ fontFamily: 'Inter', fontWeight: 500, fontSize: '15px', color: lightMode ? 'rgba(17,24,39,0.82)' : 'rgba(255,255,255,0.92)', textDecoration: 'none' }}
-            onMouseEnter={e => (e.currentTarget.style.background = lightMode ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.06)')}
-            onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-          >
-            Patient Login
-            <ArrowRight size={14} style={{ color: '#f7b93b', opacity: 0.7 }} aria-hidden />
-          </Link>
         </div>
       </div>
     </nav>
